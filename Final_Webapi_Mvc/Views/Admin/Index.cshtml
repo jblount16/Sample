@@ -1,0 +1,75 @@
+﻿@model PagedList.IPagedList<Final_Webapi_Mvc.Models.Clothing>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+
+  
+</p>
+@using (Ajax.BeginForm(
+                         new AjaxOptions
+                                        {
+                               HttpMethod = "Get",
+                               InsertionMode = InsertionMode.Replace,
+                               UpdateTargetId = "SearchResults"
+                                               }))
+
+
+
+{
+    <div>Search By Category</div> @Html.DropDownList("CatID", (IEnumerable<SelectListItem>)ViewBag.Category, "Select Procduct", new { @class = "form-control", onchange = "$(this.form).submit();" })
+}
+
+
+
+
+<table id="SearchResults" class="table">
+    <tr>
+        <th>
+        </th>
+        <th>
+            @Html.ActionLink("Name", "Index", new { sort = ViewBag.NameSortParm })
+        </th>
+        <th>
+            Description
+        </th>
+        <th>
+            @Html.ActionLink("Price", "Index", new { sort = ViewBag.PriceSortParm })
+        </th>
+    </tr>
+    
+    
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            <img src="@Url.Content(String.Format("~/Images/{0}", item.Image))" width="150" height="100" />
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Price)
+        </td> 
+        <td>
+        </td>
+    </tr>
+
+}
+</table>
+
+<br />
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page, sort = ViewBag.CurrentSort }))
+
+
